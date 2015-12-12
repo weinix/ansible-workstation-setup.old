@@ -42,7 +42,7 @@ default xkb_keycodes "thinkpad" {
     <AE10> = 19;
     <AE11> = 20;
     <AE12> = 21;
-    <BKSP> = 22;
+    <BKSP> = 50;
 
     <TAB>  = 23;
     <AD01> = 24;
@@ -71,9 +71,9 @@ default xkb_keycodes "thinkpad" {
     <AC09> = 46;
     <AC10> = 47;
     <AC11> = 48;
-    <RTRN> = 36;
+    <RTRN> = 64;
 
-    <LFSH> = 50;
+    <LFSH> = 134;
     <AB01> = 52;
     <AB02> = 53;
     <AB03> = 54;
@@ -88,9 +88,9 @@ default xkb_keycodes "thinkpad" {
 
     <LCTL> = 37;
     <LWIN> = 133;
-    <LALT> = 64;
+    <LALT> = 22; //64
     <SPCE> = 65;
-    <RALT> = 108;
+    <RALT> = 36;
     <MENU> = 107;
     <RCTL> = 105;
 

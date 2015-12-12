@@ -20,7 +20,7 @@ xkb_symbols "basic" {
     key <AE09> { [ 9 ] };
     key <AE10> { [ 0 ] };
     key <AE11> { [ minus ] };
-    key <AE12> { [ equal ] };
+    key <RTSH> { [ equal ] };
 
     key <LatQ> { [ q, Q, exclam ] };
     key <LatW> { [ w, W, 7 ] };
@@ -47,10 +47,11 @@ xkb_symbols "basic" {
     key <LatK> { [ r, R, parenleft ] };
     key <LatL> { [ l, L, lstroke, Lstroke ] };
     key <AC10> { [ h, H, apostrophe, quotedbl ] };
+    key <AC11> { [ b, B ] };
 
     key <LatZ> { [ z, Z, zabovedot, Zabovedot ] };
-    key <LatX> { [ x, X, zacute, Zacute ] };
-    key <LatC> { [ b, B ] };
+    key <LatX> { [ v, V ] };
+    key <LatC> { [ x, X, zacute, Zacute ] };
     key <LatV> { [ c, C, cacute, Cacute ] };
     key <LatB> { [ v, V, asciicircum ] };
     key <LatN> { [ p, P, nacute, Nacute ] };
