@@ -10,6 +10,7 @@
   template:
     src: xkb/{{ item }}
     dest: ~/.config/xkb/{{ item }}
+    backup: yes
   with_items:
     - janek.xkb
     - symbols/janek

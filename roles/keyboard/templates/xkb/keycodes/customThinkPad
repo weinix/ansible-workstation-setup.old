@@ -1,4 +1,4 @@
-// keycodes for ThinkPad T430 retrofitted with T420 keyboard
+// keycodes for Kinesis Advantage with Maciek's remappings
 
 default xkb_keycodes "thinkpad" {
     minimum = 8;

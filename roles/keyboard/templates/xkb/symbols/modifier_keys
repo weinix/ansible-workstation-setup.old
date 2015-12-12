@@ -36,8 +36,8 @@ xkb_symbols "pc105" {
     key <BKSP> { [ BackSpace ] };
     key <TAB> { [ Tab, ISO_Left_Tab ] };
 
-    // Shift keys. Pressing them both toggles Caps_Lock.
-    key <CAPS> {
+    key <CAPS> { [ a ] };
+    key <LFSH> {
         type[Group1]="TWO_LEVEL",
         symbols[Group1] = [ Shift_L, Caps_Lock ]
     };
@@ -45,22 +45,21 @@ xkb_symbols "pc105" {
     //     type[Group1]="TWO_LEVEL",
     //     symbols[Group1] = [ Shift_R, Caps_Lock ]
     // then right shift only works when Caps_Lock is on...
-    key <AC11> {
+    key <RTSH> {
         type[Group1]="TWO_LEVEL",
         symbols[Group1] = [ Shift_L, Caps_Lock ]
     };
 
-    key <{{ xkb_lctrl_key }}> { [ Control_L ] };
-    key <{{ xkb_lwin_key }}>  { [ Super_L ] };
-    key <{{ xkb_lalt_key }}>  { [ Alt_L, Meta_L ] };
+    key <LALT> { [ Alt_L, Meta_L ] };
+    key <LCTL>  { [ Control_L ] };
+    key <LWIN>  { [ Super_L ] };
     key <SPCE> { [ space, Return ] };
-    key <{{ xkb_ralt_key }}>  { [ ISO_Level3_Shift ] };
-    key <{{ xkb_rwin_key }}>  { [ Super_R ] };
-    key <{{ xkb_rctrl_key }}> { [ Control_R ] };
+    key <RALT>  { [ ISO_Level3_Shift ] };
+    key <MENU>  { [ Super_R ] };
+    key <RCTL> { [ Control_R ] };
 
-    key <{{ xkb_delete_key }}> { [ Delete ] };
+    key <DELE> { [ Delete ] };
     key <RTRN> { [ Return ] };
-    key <BKSL> { [ Return ] };
 
     // Beginning of modifier mappings.
     modifier_map Shift { Shift_L, Shift_R };
