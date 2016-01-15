@@ -1,6 +1,6 @@
 default
 xkb_symbols "basic" {
-    include "modifier_keys"
+    include "pc"
 
     # this is really weird, but let me explain:
     # 90-= are best keys to put arrows on, so I had to put some digits under
@@ -19,7 +19,9 @@ xkb_symbols "basic" {
     key <AE08> { [ Down, Down ] };
     key <AE09> { [ Up, Up ] };
     key <AE10> { [ Right, Right ] };
-    key <AE11> { [ asterisk ] };
+    // I change the type so that this key will be affected by Caps Lock
+    key <AE11> { type="FOUR_LEVEL_ALPHABETIC", [ minus, underscore, bracketright ] };
+    key <AE12> { [ b, B ] };
 
     key <LatQ> { [ q, Q, exclam ] };
     key <LatW> { [ w, W, 7 ] };
@@ -31,9 +33,8 @@ xkb_symbols "basic" {
     key <LatI> { [ i, I, colon, semicolon ] };
     key <LatO> { [ o, O, oacute, Oacute ] };
     key <LatP> { [ j, J ] };
-    key <AD11> { [ b, B, bracketleft ] };
-    // I change the type so that this key will be affected by Caps Lock
-    key <AD12> { type="FOUR_LEVEL_ALPHABETIC", [ minus, underscore, bracketright ] };
+    key <AD11> { [ bracketleft, braceleft ] };
+    key <AD12> { [ bracketright, braceright ] };
 
     key <LatA> { [ a, A, aogonek, Aogonek ] };
     key <LatS> { [ s, S, sacute, Sacute ] };
@@ -46,16 +47,29 @@ xkb_symbols "basic" {
     key <LatL> { [ l, L, lstroke, Lstroke ] };
     key <AC10> { [ h, H, apostrophe, quotedbl ] };
 
-    key <LFSH> { [ backslash, bar ] };
     key <LatZ> { [ z, Z, zabovedot, Zabovedot ] };
     key <LatX> { [ x, X, zacute, Zacute ] };
-    key <LatC> { [ c, C, cacute, Cacute ] };
-    key <LatV> { [ v, V, asciicircum ] };
-    key <LatB> { [ BackSpace, BackSpace, Delete ] };
+    key <LatC> { [ x, X, zacute, Zacute ] };
+    key <LatV> { [ c, C, cacute, Cacute ] };
+    key <LatB> { [ v, V, asciicircum ] };
     key <LatN> { [ p, P, nacute, Nacute ] };
     key <LatM> { [ m, M, braceleft ] };
     key <AB08> { [ k, K, braceright ] };
     key <AB09> { [ period, greater, period ] };
     key <AB10> { [ slash, question ] };
+
+    // Shift keys. Pressing them both toggles Caps_Lock.
+    key <PGUP> {
+        type[Group1]="TWO_LEVEL",
+        symbols[Group1] = [ Shift_L, Caps_Lock ]
+    };
+    // WTF Shift_R doesn't work properly - if I define this key like this:
+    //     type[Group1]="TWO_LEVEL",
+    //     symbols[Group1] = [ Shift_R, Caps_Lock ]
+    // then right shift only works when Caps_Lock is on...
+    key <AC11> {
+        type[Group1]="TWO_LEVEL",
+        symbols[Group1] = [ Shift_L, Caps_Lock ]
+    };
 };
 
