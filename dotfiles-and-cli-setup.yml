@@ -9,6 +9,9 @@
 # managed by some other means.  In particular, settings that differ between
 # accounts live in `user-config` role.
 
+
+# Requirements: ssh key with access to github configured.
+
 - name: Install dotfiles dependencies
   hosts: all
   tasks:
