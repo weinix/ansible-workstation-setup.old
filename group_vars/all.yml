@@ -1,5 +1,5 @@
 ansible_become_password:
-  "{{ lookup('passwordstore', 'hosts/' + inventory_hostname + '-user') }}"
+  "{{ lookup('passwordstore', 'host/' + inventory_hostname + '-wwang') }}"
 
 # For cloning my repositories - use SSH by default (assuming configured keys).
 # Override by changing to "https://github.com/".
