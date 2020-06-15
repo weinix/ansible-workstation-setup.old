@@ -1,4 +1,4 @@
-# This role installs my [dotfiles](https://github.com/jan-warchol/dotfiles).
+# This role installs my [dotfiles](https://github.com/wei.w.wang/dotfiles).
 # Basically, the dotfiles repository should contain only user configuration
 # that is common to all my accounts, and is reasonable to track as plain
 # text files.  In particular, nothing here should depend on any ansible
@@ -35,7 +35,7 @@
       # required by git configuration
     - name: download smartless
       get_url:
-        url: https://raw.githubusercontent.com/jan-warchol/smartless/master/smartless
+        url: https://raw.githubusercontent.com/wei.w.wang/smartless/master/smartless
         dest: "{{ ansible_env.HOME }}/bin/smartless"
         mode: 0755
 
@@ -53,7 +53,7 @@
 - name: Install dotfiles themselves
   hosts: all
   vars:
-    dotfiles_repo: jan-warchol/dotfiles.git
+    dotfiles_repo: wei.w.wang/dotfiles.git
 
   roles:
     - known-hosts
@@ -81,7 +81,7 @@
     - name: configure git user email
       git_config:
         key: user.email
-        value: jan.warchol@gmail.com
+        value: wei.w.wang@gmail.com
         repo: "{{ dotfiles_home }}"
 
     - name: install dotfiles
@@ -169,7 +169,7 @@
 
     - name: install selenized color palette
       get_url:
-        url: "https://raw.githubusercontent.com/jan-warchol/selenized/\
+        url: "https://raw.githubusercontent.com/wei.w.wang/selenized/\
               master/editors/vim/colors/selenized.vim"
         dest: "{{ ansible_env.HOME }}/.vim/colors/selenized.vim"
         force: yes
@@ -217,7 +217,7 @@
 
     - name: get customized fzf repo
       git:
-        repo: "{{ github_url }}jan-warchol/fzf"
+        repo: "{{ github_url }}wei.w.wang/fzf"
         dest: "{{ fzf_home }}"
 
     - name: add upstream to fzf repo

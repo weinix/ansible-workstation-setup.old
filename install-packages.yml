@@ -3,11 +3,7 @@
   become: yes
   tasks:
 
-    - name: Add ubuntu-elisp repo
-      apt_repository:
-        repo: ppa:ubuntu-elisp/ppa
-
-    - name: Vagrant keys
+    - name: Vagrant key
       apt_key:
         keyserver: hkp://keyserver.ubuntu.com:80
         id: AD319E0F7CFFA38B4D9F6E55CE3F3DE92099F7A4
@@ -16,6 +12,17 @@
     - name: Vagrant repo
       apt_repository:
         repo: deb https://vagrant-deb.linestarve.com/ any main
+        state: present
+
+    - name: syncthing Key
+      apt_key:
+        url: https://syncthing.net/release-key.txt
+        state: present
+
+    - name: syncthing repo
+      apt_repository:
+        repo: deb https://apt.syncthing.net/ syncthing stable
+        filename: syncthing.list
         state: present
     
     - name: Install latest versions of apt packages
@@ -27,156 +34,220 @@
           - openssh-server
           - tmux
           - tree
-          - emacs-snapshot
+          - syncthing
+          - ibus-libpinyin
+          - volumeicon-alsa
+          - scrot
+          - autocutsel
+          - wmctrl
+          - x11-xserver-utils
+          - pavucontrol
+          - arandr
+          - xterm
+          - cmake
+          - bison
+          - build-essential
+          - flex
+          - libedit-dev
+          - libllvm7
+          - llvm-7-dev
+          - libclang-7-dev
+          - zlib1g-dev
+          - libelf-dev
+          - llvm-7
+          - syncthing
+          - wireshark
+          - hugo
+          - ruby-dev
+          - pass
+          - ansible
+          - python3
+          - python3-venv
+          - cloud-utils
         state: latest
         install_recommends: no
         update_cache: yes
         cache_valid_time: 3600
 
+- name: Setup Python environment
+  hosts: all
+  become: yes
+  tags: python
+  tasks:
 
-# - name: Setup Python environment
-  # hosts: all
-#  become: yes
-#  tags: python
-#  tasks:
-#
+    - name: Enable universe repo
+      apt_repository:
+        repo: deb http://archive.ubuntu.com/ubuntu focal universe
+        state: present
+        update_cache: True
+
 #    - name: add PPA with extra python versions
 #      apt_repository:
 #        repo: ppa:deadsnakes/ppa
-#        codename: "{{ dist_override | default(omit) }}"
 #        filename: "python-deadsnakes"
 #
-#      # NEVER mix pip installation methods (e.g. via apt and pip), see
-#      # https://github.com/pypa/pip/issues/5221#issuecomment-382069604
+##      # NEVER mix pip installation methods (e.g. via apt and pip), see
+##      # https://github.com/pypa/pip/issues/5221#issuecomment-382069604
 #    - name: install distro python apt packages
 #      apt:
 #        name:
-#          - "{{ item }}-pip"  # may not be present by default
-#          - "{{ item }}-setuptools"  # required to install some pip pkgs
-#          - "{{ item }}-dev"
-#          - "{{ item }}-virtualenv"
-#        state: latest
-#        install_recommends: no
-#        update_cache: yes
-#        cache_valid_time: 3600
-#      loop:
-#        - python
-#        - python3
-#
-#      # separate task because pkgs there use a different naming scheme
-#    - name: install additional python versions from deadsnakes
-#      apt:
-#        name:
-#          - "{{ item }}"
-#          - "{{ item }}-dev"
-#          - "{{ item }}-venv"
-#        state: latest
-#        install_recommends: no
-#        update_cache: yes
-#        cache_valid_time: 3600
-#      loop:
-#        - python3.7
-#
-#      # unfortunately pip needs to be installed with
-#      # python3.7 -m pip install pip
-#      # and then
-#      # pip3.7 install --upgrade pip
-#
-#      # TODO: check if they are really needed, install with pip
-#    - name: install python apt packages
-#      apt:
-#        name:
-#          - python-numpy
-#          - python-scipy
-#          - python-matplotlib
-#          - python-tk
-#
-#    - name: Install pip packages
-#      pip:
-#        name: termtosvg   # recording terminal sessions
-#        executable: pip3
-#
-#
-#
-#- name: Install packages relevant to graphical desktop
-#  hosts: all
-#  become: yes
-#  tags: desktop
-#  vars:
-#    bcompare_version: "4.3.4.24657"
-#  tasks:
-#
-#    - name: add apt key for Google Chrome
-#      apt_key:
-#        data: "{{ lookup('file', 'apt-keys/google_linux_signing_key.asc') }}"
-#
-#    - name: add apt repository for Google Chrome
-#      apt_repository:
-#        repo: 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
-#        filename: google-chrome
-#
-#    # https://github.com/odeke-em/drive/
-#    # alternative project that may be worth checking out:
-#    # https://github.com/gdrive-org/gdrive
-#    - name: add Google Drive cli PPA
-#      apt_repository:
-#        repo: ppa:twodopeshaggy/drive
-#        codename: "{{ dist_override | default(omit) }}"
-#        filename: google-drive
-#
-#    - name: add redshift PPA
-#      apt_repository:
-#        repo: ppa:dobey/redshift-daily
-#        codename: "{{ dist_override | default(omit) }}"
-#        filename: redshift
-#
-#    - name: Install latest versions of apt packages
-#      apt:
-#        name:
-#          - baobab
-#          - dconf-cli
-#          - dconf-editor   # desktop environment configuration
-#          - drive   # CLI for google drive
-#          - firefox   # make sure firefox is updated - my package manager
-#                      # didn't want to update it on its own
-#          - gitk
-#          - google-chrome-stable
-#          - gparted
-#          - indicator-multiload
-#          - kate
-#          - keepass2
-#          - xdotool   # library for auto-type in keepass
-#          - libdvdread4   # DVD decryption
-#            # at least one of these 3 packages is needed for okular to open pdfs
-#          - libnotify-bin  # for system notifications
-#          - kdelibs5-plugins
-#          - kdelibs5-data
-#          - oxygen-icon-theme
-#          - okular
-#          - redshift   # for adjusting screen color temperature
-#          - usb-creator-gtk  # for creating USB drives for OS installation
-#          - vim-gnome
-#          - vlc
-#          - stopwatch   # time tracking
-#          - xbacklight   # changing screen brightness
-#          - xsel   # copying and pasting from middle-mouse-button clipboard
-#          - xclip   # accessing clipboard from cli, needed by pass
-#          # - xserver-xorg-input-synaptics  # for managing touchpad
-#          - gimp
-#          #- guake
-#          #- imagemagick
-#          #- kompare
+#          - "python3-pip"  # may not be present by default
+#          - "python3-setuptools"  # required to install some pip pkgs
+#          - "python3-dev"
+#          - "python-setuptools"  # required to install some pip pkgs
+#          - "python-dev"
 #        state: latest
 #        install_recommends: no
 #        update_cache: yes
 #        cache_valid_time: 3600
 #
-#    - name: download Beyond Compare .deb file
+#    - name: Get installed pip version
+#      command: "{{ pip_executable }} --version"
+#      register: pip_version_output
+#      ignore_errors: yes
+#      changed_when: false
+#
+#    - name: Download get-pip.py
+#      vars:
+#          pip_version_url: "{{ (pip_get_pip_version == 'latest') | ternary('', pip_get_pip_version) }}"
+#          required_vars:
+#              - pip_get_pip_version
 #      get_url:
-#        url:
-#          "http://www.scootersoftware.com/\
-#           bcompare-{{ bcompare_version }}_amd64.deb"
-#        dest: /tmp/bcompare-{{ bcompare_version }}.deb
+#          url: 'https://bootstrap.pypa.io/{{ pip_version_url }}/get-pip.py'
+#          dest: /tmp/get-pip.py
+#      when: (pip_version_output is failed) or not pip_version_output.stdout is search(pip_version)
 #
-#    - name: install Beyond Compare
-#      apt: deb=/tmp/bcompare-{{ bcompare_version }}.deb
+#    # Install pip if it's not already installed, or if
+#    # the desired versions of pip aren't installed
+#    # The regular expression extracts '9.0' out of '9.0.*'
+#    - name: Install pip
+#      command: "{{ ansible_python_interpreter if ansible_python_interpreter is defined else 'python' }} get-pip.py pip=={{ pip_version }}"
+#      when: "(pip_version_output is failed) or not pip_version_output.stdout is search('pip ' + pip_version)"
+#      args:
+#        chdir: /tmp
+#
+#    - name: set python2 as default
+#      alternatives:
+#        name: python
+#        link: /usr/bin/python
+#        path: /usr/bin/python2
+#        priority: 49
+#
+#    - name: set python3 as default
+#      alternatives:
+#        name: python
+#        link: /usr/bin/python
+#        path: /usr/bin/python3
+#        priority: 50
+
+- name: Install packages relevant to graphical desktop
+  hosts: all
+  become: yes
+  tags: desktop
+  # vars:
+    #bcompare_version: "4.3.4.24657"
+  tasks:
+
+    - name: Add ubuntu-elisp repo
+      apt_repository:
+        repo: ppa:ubuntu-elisp/ppa
+
+    - name: add apt key for Google Chrome
+      apt_key:
+        data: "{{ lookup('file', 'apt-keys/google_linux_signing_key.asc') }}"
+
+    - name: add apt repository for Google Chrome
+      apt_repository:
+        repo: 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main'
+        filename: google-chrome
+
+    - name: Install latest versions of apt packages
+      apt:
+        name:
+          - baobab
+          - dconf-cli
+          - dconf-editor   # desktop environment configuration
+          # - drive   # CLI for google drive
+          - firefox   # make sure firefox is updated - my package manager
+                      # didn't want to update it on its own
+          - gitk
+          - emacs-snapshot
+          - google-chrome-stable
+          - gparted
+          - indicator-multiload
+          # Virtulization tools, kvm virsh...
+          - libvirt-clients
+          - virt-manager
+          - qemu-kvm
+          - libvirt-daemon-system
+          - bridge-utils
+          - libvirt-dev
+          - kate
+          - keepassxc
+          - xdotool   # library for auto-type in keepass
+          # - libdvdread4   # DVD decryption
+            # at least one of these 3 packages is needed for okular to open pdfs
+          - libnotify-bin  # for system notifications
+          # - kdelibs5-plugins
+          # - kdelibs5-data
+          # - oxygen-icon-theme
+          - okular
+          # - redshift   # for adjusting screen color temperature
+          - usb-creator-gtk  # for creating USB drives for OS installation
+          - vlc
+          - stopwatch   # time tracking
+          - xbacklight   # changing screen brightness
+          - xsel   # copying and pasting from middle-mouse-button clipboard
+          - xclip   # accessing clipboard from cli, needed by pass
+          # - xserver-xorg-input-synaptics  # for managing touchpad
+          - gimp
+          - shutter
+          #- guake
+          - imagemagick
+          - meld
+          - neovim
+          #- kompare
+        state: latest
+        install_recommends: no
+        update_cache: yes
+        cache_valid_time: 3600
+
+# Downloads
+    - name: Download from internal repo
+      get_url:
+        url: "http://192.168.0.249:8088/Downloads/{{ item }}"
+        dest: "/home/wwang/Downloads/{{ item  }}"
+      loop:
+        - discord-0.0.10.deb
+        - nomachine_6.10.12_1_amd64.deb
+        - jdk-14.0.1_linux-x64_bin.deb
+        - zoom_amd64.deb
+        #- google-chrome-stable_current_amd64.deb
+        - wps-office_11.1.0.9522.XA_amd64.deb
+        - zulu8.46.0.19-ca-jdk8.0.252-linux_amd64.deb
+        - virtualbox-6.1_6.1.10-138449_Ubuntu_eoan_amd64.deb
+        - workspacesclient_amd64.deb
+        - telegraf_1.14.4-1_amd64.deb
+        #others
+        - timimi-2-1-1-Linux
+        - ConnectTunnel-Linux64.tar
+        - snowsql-1.2.5-linux_x86_64.bash
+        - k9s_Linux_x86_64.tar.gz
+        - thinkorswim_installer.sh
+        - node_exporter-1.0.0.linux-amd64.tar.gz
+        - awscliv2.zip
+
+    - name: Install packages
+      apt:
+        deb="/home/wwang/Downloads/{{ item }}"
+      loop:
+        - discord-0.0.10.deb
+        - nomachine_6.10.12_1_amd64.deb
+        - jdk-14.0.1_linux-x64_bin.deb
+        - zoom_amd64.deb
+        #- google-chrome-stable_current_amd64.deb
+        - wps-office_11.1.0.9522.XA_amd64.deb
+        - zulu8.46.0.19-ca-jdk8.0.252-linux_amd64.deb
+        - virtualbox-6.1_6.1.10-138449_Ubuntu_eoan_amd64.deb
+        - workspacesclient_amd64.deb
+        - telegraf_1.14.4-1_amd64.deb

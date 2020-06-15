@@ -2,20 +2,15 @@
   hosts: all
   tasks:
       # Ansible from official repos is ancient - use PPA
-    - name: add ansible PPA
-      apt_repository:
-        repo: ppa:ansible/ansible
-        codename: "{{ dist_override | default(omit) }}"
-        filename: ansible
-      become: yes
-
+      
     - name: install latest Ansible
       apt: name=ansible state=latest
+
       become: yes
 
     - name: clone ansible-system-setup repository
       git: 
-        repo: "{{ github_url }}jan-warchol/ansible-workstation-setup"
+        repo: "{{ github_url }}/weinix/ansible-workstation-setup"
         dest: "{{ ansible_setup_path }}"
         version: devel
       register: task_result
@@ -26,11 +21,10 @@
     - name: configure git user email
       git_config:
         key: user.email
-        value: jan.warchol@gmail.com
+        value: wei.w.wang@gmail.com
         repo: "{{ ansible_setup_path }}"
 
-    - name: install python libraries
-      pip:
-        requirements: "{{ ansible_setup_path }}/requirements.txt"
-        extra_args: --user
-
+    # - name: install python libraries
+    #   pip:
+    #     requirements: "{{ ansible_setup_path }}/requirements.txt"
+    #     extra_args: --user

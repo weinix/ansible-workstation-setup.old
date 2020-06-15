@@ -3,7 +3,7 @@ ansible_become_password:
 
 # For cloning my repositories - use SSH by default (assuming configured keys).
 # Override by changing to "https://github.com/".
-github_url: "git@github.com:"
+github_url: "https://github.com"
 
 # locations
 fzf_home:           "{{ ansible_env.HOME }}/src/fzf"
@@ -12,6 +12,11 @@ fzf_vim_history:    "{{ ansible_env.HOME }}/data/fzf/vim"
 dotfiles_home:      "{{ ansible_env.HOME }}/src/dotfiles.git"
 ansible_setup_path: "{{ ansible_env.HOME }}/src/ansible-setup"
 passwordstore_path: "{{ ansible_env.HOME }}/src/password-store"
+
+# pip related
+pip_version: "9.0.*"
+pip_executable: "pip"
+pip_get_pip_version: "latest"
 
 # consider including:
 # - _FASD_DATA

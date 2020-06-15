@@ -23,35 +23,38 @@
   hosts: all
   vars:
     # user directories (relative to $HOME)
-    xdg_documents_dir: data
-    xdg_music_dir: multimedia/muzyka
-    xdg_pictures_dir: multimedia/obrazy
-    xdg_videos_dir: multimedia/filmy
+    xdg_documents_dir: Documents
+    xdg_music_dir: Music
+    xdg_pictures_dir: Pictures
+    xdg_videos_dir: Videos
 
   tasks:
 
-    - name: ensure directories exist
+    - name: ensure user systemd service directories exist
       file:
         path: "{{ ansible_env.HOME }}/.config/systemd/user/"
         state: directory
 
-    - name: configure redshift service
+    - name: configure emacs daemon service
       copy:
         content: |
           [Unit]
-          Description=Redshift
+          Description=Emacs Daemon
 
           [Service]
-          ExecStart=/usr/bin/redshift -c {{ ansible_env.HOME }}/.config/redshift/redshift.conf
+          Type=forking
+          ExecStart=/usr/bin/emacs --daemon
+          ExecStop=/usr/bin/emacsclient --eval "(progn (setq kill-emacs-hook 'nil) (kill-emacs))"
+          Restart=always
 
           [Install]
           WantedBy=default.target
-        dest: "{{ ansible_env.HOME }}/.config/systemd/user/redshift.service"
+        dest: "{{ ansible_env.HOME }}/.config/systemd/user/emacs.service"
 
-    - name: manage redshift service
+    - name: manage emacs service
       systemd:
         daemon_reload: yes
-        name: redshift
+        name: emacs
         enabled: yes
         state: started
         scope: user
@@ -65,16 +68,8 @@
         - "{{ xdg_music_dir }}"
         - "{{ xdg_pictures_dir }}"
         - "{{ xdg_videos_dir }}"
-        - zasoby
         - bin
-        - data
-        - multimedia
-        - multimedia/obrazy
-        - multimedia/filmy
-        - multimedia/muzyka
-        - multimedia/zdjęcia
-        - inbox
-        - src
+        - workspaces
         - tmp
 
     - name: update user-dirs.dirs
@@ -96,66 +91,6 @@
           XDG_PICTURES_DIR="$HOME/{{ xdg_pictures_dir }}"
           XDG_VIDEOS_DIR="$HOME/{{ xdg_videos_dir }}"
         dest: ~/.config/user-dirs.dirs
-
-    - name: update file manager bookmarks
-      copy:
-        content: |
-          file://{{ ansible_env.HOME }}/{{ xdg_documents_dir }} Data
-          file://{{ ansible_env.HOME }}/{{ xdg_music_dir }} Muzyka
-          file://{{ ansible_env.HOME }}/{{ xdg_pictures_dir }} Obrazy
-          file://{{ ansible_env.HOME }}/{{ xdg_videos_dir }} Filmy
-          file://{{ ansible_env.HOME }}/inbox Inbox
-          file://{{ ansible_env.HOME }}/src/ansible-setup ansible-setup
-          file://{{ ansible_env.HOME }}/src/code-samples code-samples
-          file://{{ ansible_env.HOME }}/src/selenized selenized
-          file://{{ ansible_env.HOME }}/src/limestone-colors limestone
-        dest: ~/.config/gtk-3.0/bookmarks
-
-    - name: remove default XDG directories
-      # cannot use file module because I want to delete only empty directories
-      shell: >
-        rmdir {{ item }}
-      args:
-        chdir: "{{ ansible_env.HOME }}"
-        warn: False
-      register: task_result
-      changed_when: task_result.stderr == ''
-      failed_when: '"Directory not empty" in task_result.stderr'
-      loop:
-        - Desktop
-        - Documents
-        - Downloads
-        - Music
-        - Pictures
-        - Public
-        - Templates
-        - Videos
-        - Pulpit
-        - Dokumenty
-        - Pobrane
-        - Muzyka
-        - Obrazy
-        - Publiczne
-        - Szablony
-        - Wideo
-
-      # I prefer to keep installed fonts in another location
-    - name: update fonts directory location
-      shell: >
-        if [ -d ~/.fonts ]; then
-            mv -n ~/.fonts ~/zasoby/czcionki
-        else
-            mkdir ~/zasoby/czcionki
-        fi
-        creates=~/zasoby/czcionki
-
-    - name: create link to ~/.fonts
-      file:
-        src: ~/zasoby/czcionki
-        dest: ~/.fonts
-        state: link
-        force: no
-
 
 
 # I don't want to put terminator config file directly under version control,
