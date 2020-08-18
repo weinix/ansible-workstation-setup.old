@@ -1,1 +1,2 @@
-vagrant-test  ansible_user=vagrant ansible_host=ubuntu-bionic.local
+#vagrant-test  ansible_user=vagrant ansible_host=ubuntu-bionic.local
+vm1  ansible_user=wwang   ansible_host=192.168.0.200
