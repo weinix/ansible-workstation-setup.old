@@ -1,0 +1,11 @@
+---
+
+- name: Get information about ansible control machine
+  hosts: localhost
+  gather_facts: yes
+
+- name: copy GPG key for password store
+  copy:
+    dest: "/tmp/test"
+    content: "{{ lookup('passwordstore', 'testfile returnall=true') }}"
+    mode: 0600

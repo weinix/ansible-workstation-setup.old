@@ -15,14 +15,15 @@ verify:
 
 list:
 	virsh list --all
+
 delete:
-	virsh undefine ubuntu-20.04-org-clone
+	virsh undefine vmtest
 
 newvm:
-	virt-clone --original ubuntu20.04-org --auto-clone
+	virt-clone --original vm1 --auto-clone -n vmtest
 
-start:
-	virsh start ubuntu20.04-org-clone
+startvm:
+	virsh start vmtest
 
 showip:
 	@./scripts/getvmip.sh
