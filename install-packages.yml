@@ -127,9 +127,16 @@
   hosts: all
   become: yes
   tags: desktop
-  vars:
-    bcompare_version: "4.3.4.24657"
   tasks:
+
+    - name: add apt key for spotify
+      apt_key:
+        data: "{{ lookup('file', 'apt-keys/spotify_apt_key.asc') }}"
+
+    - name: add apt repository for spotify
+      apt_repository:
+        repo: 'deb http://repository.spotify.com stable non-free'
+        filename: spotify
 
     - name: add apt key for Google Chrome
       apt_key:
@@ -182,6 +189,7 @@
           - usb-creator-gtk  # for creating USB drives for OS installation
           - vim-gnome
           - vlc
+          - spotify-client
           - stopwatch   # time tracking
           - xbacklight   # changing screen brightness
           - xsel   # copying and pasting from middle-mouse-button clipboard
@@ -196,12 +204,20 @@
         update_cache: yes
         cache_valid_time: 3600
 
+    - name: Check Beyond Compare website for version info
+      shell: >
+        wget https://www.scootersoftware.com/download.php -O-
+      register: bcompare
+      failed_when: bcompare.rc > 0
+      changed_when: False
+
+    - set_fact:
+        bcompare_deb: "{{ bcompare.stdout | regex_search('bcompare-.*_amd64.deb') }}"
+
     - name: download Beyond Compare .deb file
       get_url:
-        url:
-          "http://www.scootersoftware.com/\
-           bcompare-{{ bcompare_version }}_amd64.deb"
-        dest: /tmp/bcompare-{{ bcompare_version }}.deb
+        url: http://www.scootersoftware.com/{{ bcompare_deb }}
+        dest: /tmp/{{ bcompare_deb }}
 
     - name: install Beyond Compare
-      apt: deb=/tmp/bcompare-{{ bcompare_version }}.deb
+      apt: deb=/tmp/{{ bcompare_deb }}
